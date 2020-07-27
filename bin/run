@@ -2,4 +2,6 @@
 
 require './config/environment'
 
+interface = Interface.new
+
 binding.pry
