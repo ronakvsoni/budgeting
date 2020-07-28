@@ -83,13 +83,13 @@ class Interface
     email_verified = false
 
     #Check if the email exists in the database
-    until !!email_verified do
+    until email_verified do
       email = prompt.ask(email_quest, default: exit_string)
       email_quest = 'Sorry! I can\'t find you by that email. Try again?'
 
       break if email == exit_string
 
-      email_verified = !!User.find_by(email: email.downcase)
+      email_verified = !!User.find_by(email: email.downcase) #TODO: Make this a User.emails.include? check
     end
 
     if email_verified
