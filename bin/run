@@ -2,6 +2,38 @@
 
 require './config/environment'
 
-interface = Interface.new
+i = Interface.new
+
+#Some notes on flow of the interface:
+
+# Welcome the user, ask if they're new here
+# + If new, go to user creation, then sign in
+# - If not, ask for their email and blank field for password
+
+# When they sign in, create an instance of the User class from their data in the db - this is our user
+# (STRETCH) Add an option here to check what budget they currently have open, saved to the db
+# Option menu for opening an existing budget or creating new > this goes to Budget Menu
+
+# Budget Menu: (Currently this is just creating bank accounts and logging transactions)
+# + Checkbook (bank_accounts)
+
+# +> Checkbook
+#  + Add New Bank Account > This goes to 'Add New Bank Account' flow
+#  + Options for each existing bank account > This goes to 'View Bank Account' flow
+
+# Add New Bank Account
+# + Bank Name:
+# + (STRETCH) Do You Want to Link This Account?
+#  + (STRETCH) Y > this goes to Link Account menu (NOT BUILT)
+#  + (STRETCH) N > this skips to the next option
+# + Starting Balance:
+# (COMPLETION) Created! > Goes back to 'Checkbook' menu
+
+# View Bank Account
+# + Bank Name, Current Balance
+# + (STRETCH) Alert when unapproved transactions
+# + Reconcile Account > This goes to 'Reconcile Account' dialog
+# + View Full Transaction History > This goes to 'View Full Transaction History' menu
+# + List of last five unreconciled transactions
 
 binding.pry
