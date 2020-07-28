@@ -5,7 +5,7 @@ require './config/environment'
 i = Interface.new
 
 until i.exit do
-  i.send(i.open)
+  i.open
 end
 
 i = nil

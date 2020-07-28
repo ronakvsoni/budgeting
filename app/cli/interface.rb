@@ -19,11 +19,13 @@ class Interface
       system 'clear'
     end
 
-    prompt.select('Hi! Are you new here?', cycle: true) do |s|
+    open_choice = prompt.select('Hi! Are you new here?', cycle: true) do |s|
       s.choice 'Brand new!', -> { 'create_user' }
       s.choice 'Nope! Sign me in, please.', -> { 'sign_in' }
       s.choice 'Exit.', -> { 'close' }
     end
+
+    self.send(open_choice)
   end
 
   def close
