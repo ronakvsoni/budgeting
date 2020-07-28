@@ -4,6 +4,8 @@ require './config/environment'
 
 i = Interface.new
 
+i.art_of_budgeting
+
 until i.exit do
   i.open
 end

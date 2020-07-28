@@ -16,7 +16,7 @@ class Interface
   def open
     prompt.say('Let\'s clean this up first...') #TODO: Maybe remove this, but it's kind of cute.
     sleep 1
-    self.clear_screen
+    self.system_clear
 
     open_choice = prompt.select(open_message, cycle: true) do |s|
       s.choice open_choice_1, -> { 'create_user' }
@@ -32,17 +32,25 @@ class Interface
   end
 
   def close
-    self.clear_screen
+    self.system_clear
     prompt.say('Bye for now!')
     self.exit = true
   end
 
-  def clear_screen
+  def system_clear
     if Gem.win_platform?
       system 'cls'
     else
       system 'clear'
     end
+  end
+
+  def art_of_budgeting
+    self.system_clear
+    logo = File.open('./app/cli/budgeting.txt')
+    logo = logo.readlines.map(&:strip)
+    logo.each { |line| puts line }
+    sleep 3
   end
 
   #Create user and sign in methods
@@ -58,10 +66,16 @@ class Interface
         a.validate :email
         a.modify :down
       end
-      email_quest = 'Oh, sorry! Please enter your email address again:'
+      email_quest = 'Sorry! Please enter your email address again:'
       email_verified = prompt.select("Great! I have your email as #{email}. Is that right?", cycle: :true) do |s|
         s.choice 'Yep!', true
         s.choice 'No, that isn\'t right.', false
+      end
+
+      if !!User.find_by(email: email)
+        email_verified = false
+        prompt.say('Looks like there\'s already a user with that email in our system.')
+        sleep 1
       end
     end
 
@@ -107,8 +121,4 @@ class Interface
 
   #User menu methods
 
-  def art_of_budgeting
-    logo = File.read('./cli/budgeting.txt')
-    puts logo
-  end
 end
