@@ -13,9 +13,7 @@ class Interface
   #Instance methods for interacting with the Interface object
 
   #Opening menu methods and close for the entire interface
-  def open
-    prompt.say('Let\'s clean this up first...') #TODO: Maybe remove this, but it's kind of cute.
-    sleep 1
+  def main_menu
     self.system_clear
 
     open_choice = prompt.select(open_message, cycle: true) do |s|
@@ -89,11 +87,11 @@ class Interface
     
     sleep 1
 
-    prompt.say('You\'re all set. Go ahead and sign in.')
+    prompt.say('Siging you in...')
 
     sleep 2
 
-    self.open
+    self.user_dashboard
   end
 
   def sign_in
@@ -120,11 +118,161 @@ class Interface
       end
         prompt.say('Signing you in...')
         sleep 1
-        self.select_budget_menu
+        self.user_dashboard
     end
   end
 
+  def sign_out
+    prompt.say('Sure thing. Signing you out...')
+    self.user = nil
+
+    sleep 1
+
+    self.main_menu
+  end
+
   #User menu methods
+
+  #User menus
+  def user_dashboard
+    self.system_clear
+
+    menu_select = prompt.select("Hi, #{self.user.first_name}! What would you like to do next?") do |s|
+      s.choice 'Show me my budgets.', 'select_budget_menu'
+      s.choice 'I\'d like to update my user profile.', 'edit_user'
+      s.choice 'Sign me out.', 'sign_out'
+    end
+
+    self.send(menu_select)
+  end
+
+  def edit_user
+    self.system_clear
+    prompt.say('Here\'s your profile!')
+    prompt.say("Name: #{self.user.first_name} #{self.user.last_name}")
+    prompt.say("Email: #{self.user.email}")
+    !!self.user.phone ? prompt.say("Phone: #{self.user.phone}") : prompt.say('Looks like we don\'t have a phone number!')
+    puts ''
+
+    menu_select = prompt.select('What would you like to change?') do |s|
+      s.choice 'My name.', 'edit_user_name'
+      s.choice 'My email address.', 'edit_user_email'
+      s.choice 'My phone number.', 'edit_user_phone'
+      s.choice 'I want to delete my account.', 'delete_user'
+      s.choice 'Never mind, take me back.', 'user_dashboard'
+    end
+
+    self.send(menu_select)
+  end
+
+  def delete_user
+    self.edit_user
+  end
+
+  def edit_user_name
+    prompt.say('I\'ve got my whiteout ready:')
+    prompt.say("First name: #{self.user.first_name}")
+    prompt.say("Last name: #{self.user.last_name}")
+
+    menu_select = prompt.select('Would you like to change your first name or your last name?') do |s|
+      s.choice 'My first name.', 'first_name'
+      s.choice 'Last, please.', 'last_name'
+    end
+
+    new_name = prompt.ask('Sure thing! What would you like to change it to?')
+    prompt.say('Strong name. Updating...')
+
+    self.user.send("#{menu_select}=", new_name)
+    self.user.save
+
+    sleep 1
+
+    prompt.say("Done! Your name is now #{self.user.first_name} #{self.user.last_name}.")
+
+    done = prompt.select('Finished here?') do |s|
+      s.choice 'Yes, thank you.', true
+      s.choice 'No, I want to change something else.', false
+    end
+
+    if done
+      prompt.say('Glad to be of help! Dashboard coming up...')
+      sleep 1
+      self.user_dashboard
+    else
+      prompt.say('Getting creative? I like it.')
+      sleep 1
+      self.edit_user_name
+    end
+  end
+
+  def edit_user_email
+    prompt.say("Your email address is #{self.user.email}.")
+    
+    email_quest = 'What do you want to change it to?'
+    email_verified = false
+    until email_verified do
+      email = prompt.ask(email_quest) do |a|
+        a.validate :email
+        a.modify :down
+      end
+      email_quest = 'Sorry! Please enter a different email:'
+      email_verified = prompt.select("Great! I have your email as #{email}. Is that right?", cycle: :true) do |s|
+        s.choice 'Yep!', true
+        s.choice 'No, that isn\'t right.', false
+      end
+
+      if !!User.find_by(email: email)
+        email_verified = false
+        prompt.say('Looks like there\'s already a user with that email in our system.')
+        sleep 1
+      end
+    end
+
+    prompt.say('Updating...')
+
+    self.user.email = email
+    self.user.save
+
+    sleep 1
+
+    prompt.say('Done!')
+
+    sleep 1
+
+    self.edit_user
+  end
+
+  def edit_user_phone(direct = false)
+    if direct
+      phone = prompt.ask('What would you like to change it to?', default: 'Leave this blank to delete it.')
+
+      prompt.say('Updating...')
+
+      self.user.phone = phone
+      self.user.save
+
+      sleep 1
+
+      prompt.say('Done!')
+
+      sleep 1
+
+      self.edit_user
+    end
+
+    
+    !!self.user.phone ? prompt.say("Phone: #{self.user.phone}") : prompt.say('Looks like we don\'t have a phone number!')
+    menu_select = prompt.select('What would you like me to do?') do |s|
+      s.choice 'Change my phone number.', true
+      s.choice 'Never mind, take me back.', false
+    end
+
+    if menu_select
+      self.edit_user_phone(true)
+    else
+      self.edit_user
+    end
+  end
 
   #Budget menus
   def select_budget_menu(p = {})
@@ -135,14 +283,15 @@ class Interface
         s.choice 'Not right now! Let\'s go back.', false
       end
 
-      go ? self.create_budget : self.open
+      go ? self.create_budget : self.user_dashboard
     else
-      budget_id = prompt.select('Okay, I found these budgets:') do |s|
+      menu_select = prompt.select('Okay, I found these budgets:') do |s|
         self.user.budgets.each { |budget| s.choice budget.name, budget.id }
-        s.choice 'I\'d like to create a new budget, please!', false
+        s.choice 'I\'d like to create a new budget, please!', 'create_budget'
+        s.choice 'On second thought, dashboard me again.', 'user_dashboard'
       end
 
-      !!budget_id ? self.view_budget(budget_id) : self.create_budget
+      !!(menu_select.class == Integer) ? self.view_budget(menu_select) : self.send(menu_select)
     end
   end
 
