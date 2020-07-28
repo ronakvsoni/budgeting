@@ -5,7 +5,3 @@ class CLI
 end
 
 
-def art_of_budgeting
-    logo = File.read("./db/budgeting.txt")
-    puts logo
-  end

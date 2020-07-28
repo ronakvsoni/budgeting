@@ -10,12 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_27_221919) do
+ActiveRecord::Schema.define(version: 2020_07_27_234005) do
 
   create_table "bank_accounts", force: :cascade do |t|
     t.integer "budget_id"
     t.float "balance"
     t.string "bank_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "budgets", force: :cascade do |t|
@@ -28,6 +30,8 @@ ActiveRecord::Schema.define(version: 2020_07_27_221919) do
     t.integer "bank_account_id"
     t.integer "expense_id"
     t.float "amount"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -35,6 +39,8 @@ ActiveRecord::Schema.define(version: 2020_07_27_221919) do
     t.string "last_name"
     t.string "email"
     t.integer "phone"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
 end
