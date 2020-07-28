@@ -4,7 +4,7 @@ require './config/environment'
 
 i = Interface.new
 
-i.art_of_budgeting
+# i.art_of_budgeting
 
 until i.exit do
   i.open
@@ -20,6 +20,7 @@ i = nil
 # - (STRETCH) ask for their password
 # When they sign in, create an instance of the User class from their data in the db - this is our user
 # (STRETCH) Add an option here to check what budget they currently have open, saved to the db
+
 
 
 # Option menu for opening an existing budget or creating new > this goes to Budget Menu
