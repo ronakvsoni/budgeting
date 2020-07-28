@@ -127,7 +127,7 @@ class Interface
   #User menu methods
 
   #Budget menus
-  def select_budget_menu
+  def select_budget_menu(p = {})
     budgets = self.user.budgets
     if budgets.empty?
       go = prompt.select('Looks like you have no budgets! Ready to create one?') do |s|
@@ -163,6 +163,7 @@ class Interface
     menu_select = prompt.select('Let me know what you\'d like to see:') do |s|
       s.choice 'Wallet', 'wallet'
       s.choice 'Options, please!', 'edit_budget'
+      s.choice 'Show me all my budgets again?', 'select_budget_menu'
     end
 
     self.send(menu_select, budget_id)
