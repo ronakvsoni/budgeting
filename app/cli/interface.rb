@@ -11,14 +11,8 @@ class Interface
   end
 
   #Instance methods for interacting with the Interface object
-  def clear_screen
-    if Gem.win_platform?
-      system 'cls'
-    else
-      system 'clear'
-    end
-  end
 
+  #Opening menu methods and close for the entire interface
   def open
     prompt.say('Let\'s clean this up first...') #TODO: Maybe remove this, but it's kind of cute.
     sleep 1
@@ -43,6 +37,15 @@ class Interface
     self.exit = true
   end
 
+  def clear_screen
+    if Gem.win_platform?
+      system 'cls'
+    else
+      system 'clear'
+    end
+  end
+
+  #Create user and sign in methods
   def create_user
     prompt.say('Welcome!') #TODO: Add color to this later
     first_name = prompt.ask('Please say your first name:', modify: :collapse)
@@ -101,6 +104,8 @@ class Interface
         #TODO: Add sign-in to main menu here
     end
   end
+
+  #User menu methods
 
   def art_of_budgeting
     logo = File.read('./cli/budgeting.txt')
