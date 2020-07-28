@@ -4,20 +4,27 @@ require './config/environment'
 
 i = Interface.new
 
+until i.exit do
+  i.send(i.open)
+end
+
+i = nil
+
 #Some notes on flow of the interface:
 
 # Welcome the user, ask if they're new here
 # + If new, go to user creation, then sign in
-# - If not, ask for their email and blank field for password
+# - If not, ask for their email
+# - (STRETCH) ask for their password
 
 # When they sign in, create an instance of the User class from their data in the db - this is our user
 # (STRETCH) Add an option here to check what budget they currently have open, saved to the db
 # Option menu for opening an existing budget or creating new > this goes to Budget Menu
 
 # Budget Menu: (Currently this is just creating bank accounts and logging transactions)
-# + Checkbook (bank_accounts)
+# + Wallet (bank_accounts)
 
-# +> Checkbook
+# +> Wallet
 #  + Add New Bank Account > This goes to 'Add New Bank Account' flow
 #  + Options for each existing bank account > This goes to 'View Bank Account' flow
 
@@ -27,14 +34,14 @@ i = Interface.new
 #  + (STRETCH) Y > this goes to Link Account menu (NOT BUILT)
 #  + (STRETCH) N > this skips to the next option
 # + Starting Balance:
-# (COMPLETION) Created! > Goes back to 'Checkbook' menu
+# (COMPLETION) Created! > Goes back to 'Wallet' menu
 
 # View Bank Account
 # + Bank Name, Current Balance
 # + (STRETCH) Alert when unapproved transactions
-# + Reconcile Account > This goes to 'Reconcile Account' dialog
+# + (STRETCH) Reconcile Account > This goes to 'Reconcile Account' dialog
 # + View Full Transaction History > This goes to 'View Full Transaction History' menu
-# + List of last five unreconciled transactions
+# + List of last five transactions
 
 # View Full Transaction History Menu
 # + 'Back to Bank Account' option at the top
@@ -42,9 +49,9 @@ i = Interface.new
 # - Scroll Up
 # ++ Print a log of transactions
 
-# Reconcile Account dialog
-# ? Is the current balance of your account X?
-# + If Y, reconcile all cleared transactions > this goes back to View Bank Account
-# - If N, print note about reconciliation > this goes back to View Bank Account
+# (STRETCH) Reconcile Account dialog
+# ? (STRETCH) Is the current balance of your account X?
+# + (STRETCH) If Y, reconcile all cleared transactions > this goes back to View Bank Account
+# - (STRETCH) If N, print note about reconciliation > this goes back to View Bank Account
 
-binding.pry
+# binding.pry

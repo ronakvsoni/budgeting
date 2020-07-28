@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'awesome_print'
+gem 'pastel'
 gem 'pry'
 gem 'rake'
 gem 'require_all'
