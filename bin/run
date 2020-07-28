@@ -1,4 +1,4 @@
-#!/user/bin/ env ruby
+#!/user/bin/env ruby
 
 require './config/environment'
 
@@ -35,5 +35,16 @@ i = Interface.new
 # + Reconcile Account > This goes to 'Reconcile Account' dialog
 # + View Full Transaction History > This goes to 'View Full Transaction History' menu
 # + List of last five unreconciled transactions
+
+# View Full Transaction History Menu
+# + 'Back to Bank Account' option at the top
+# + Scroll Down
+# - Scroll Up
+# ++ Print a log of transactions
+
+# Reconcile Account dialog
+# ? Is the current balance of your account X?
+# + If Y, reconcile all cleared transactions > this goes back to View Bank Account
+# - If N, print note about reconciliation > this goes back to View Bank Account
 
 binding.pry
