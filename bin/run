@@ -4,7 +4,7 @@ require './config/environment'
 
 i = Interface.new
 
-# i.art_of_budgeting
+i.art_of_budgeting
 
 i.main_menu
 
