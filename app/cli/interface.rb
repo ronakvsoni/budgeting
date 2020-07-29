@@ -558,14 +558,28 @@ class Interface
         self.wallet(budget_id)
       end
     end
+  end
 
-    def add_transaction(bank_account_id)
-      self.view_bank_account(bank_account_id)
+  def add_transaction(bank_account_id)
+    amount = prompt.ask('How much was the transaction for?')
+    expense_select = prompt.select('Which expense was this transaction for?') do |s|
+      Expense.all.each { |expense| s.choice "Expense Title", expense.id }
+      s.choice 'I don\'t see it - make me a new one.', true
+      s.choice 'Never mind, go back.', false
     end
 
-    def view_transactions(bank_account_id)
+    if !expense_select
       self.view_bank_account(bank_account_id)
+    elsif expense_select.class == Integer
+      prompt.say('This is the placeholder for adding an existing expense! Starting this over.')
+      self.add_transaction(bank_account_id)
+    else
+      prompt.say('This is the placeholder for creating an expense! Starting this over.')
+      self.add_transaction(bank_account_id)
     end
   end
 
+  def view_transactions(bank_account_id)
+    self.view_bank_account(bank_account_id)
+  end
 end
