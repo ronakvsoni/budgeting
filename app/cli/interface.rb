@@ -174,7 +174,7 @@ class Interface
 
     if first_select
       prompt.warn('You\'re positive? This will delete your user and all associated data immediately.')
-      prompt.error('This action can\'t be undone.')
+      prompt.warn('This action can\'t be undone.')
       last_select = prompt.select('Delete your user profile and all data?') do |s|
         s.choice 'No.', false
         s.choice 'Yes.', true
@@ -432,6 +432,44 @@ class Interface
   end
 
   def wallet(budget_id)
-    self.close
+    budget = Budget.find_by(id: budget_id)
+    bank_accounts = budget.bank_accounts
+
+    if bank_accounts.length == 0
+      add_bank_account = prompt.select('Oh! It\'s empty. Want to add a bank account?') do |s| #Could do a prompt.yes?no? here
+        s.choice 'That\'s embarrassing. Sure!', true
+        s.choice 'No, not right now.', false
+      end
+
+      if add_bank_account
+        self.create_bank_account
+      else
+        prompt.say('Alright, going back.')
+        sleep 1
+        self.view_budget(budget_id)
+      end
+    else
+      menu_select = prompt.select('Here\'s all of your accounts. Which one do you want to see?') do |s|
+        bank_accounts.each { |bank_account| s.choice "#{bank_account.name}", bank_account.id }
+        s.choice 'Close this wallet, please.', false
+      end
+
+      if !menu_select
+        prompt.say('Sure, taking you back.')
+        sleep 1
+        self.view_budget(budget_id)
+      else
+        self.view_bank_account(menu_select)
+      end
+    end
   end
+
+  def create_bank_account(p = {})
+    self.select_budget_menu
+  end
+
+  def view_bank_account(p = {})
+    self.select_budget_menu
+  end
+
 end
