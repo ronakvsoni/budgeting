@@ -11,8 +11,13 @@ class Interface
     @open_choice_2 = 'Nope! Sign me in, please.'
     @exit = false
   end
+  
+  #Main method for spinning up the individual loops that each module operates in
+  def open_window
+    self.system_clear
 
-  #Instance methods for interacting with the Interface object
+    
+  end
 
   #Opening menu methods and close for the entire interface
   def main_menu
