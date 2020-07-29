@@ -307,6 +307,8 @@ class Interface
     self.system_clear
 
     budget = Budget.find_by(id: budget_id)
+    self.user.last_opened_budget = budget_id
+    self.user.save
     prompt.say("Name: #{budget.name}     Created: #{budget.created_at}     Last Updated: #{budget.updated_at}")
 
     menu_select = prompt.select('Let me know what you\'d like to see:') do |s|
