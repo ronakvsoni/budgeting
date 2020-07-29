@@ -499,8 +499,7 @@ class Interface
       s.choice 'Go back.', false
     end
 
-    self.wallet(bank_account.budget_id) if !menu_select
-    self.send(menu_select, bank_account.id)
+    !!menu_select ? self.send(menu_select, bank_account.id) : self.wallet(bank_account.budget_id)
   end
 
   def edit_bank_account(bank_account_id)
@@ -561,21 +560,48 @@ class Interface
   end
 
   def add_transaction(bank_account_id)
-    amount = prompt.ask('How much was the transaction for?')
-    expense_select = prompt.select('Which expense was this transaction for?') do |s|
-      Expense.all.each { |expense| s.choice "Expense Title", expense.id }
-      s.choice 'I don\'t see it - make me a new one.', true
-      s.choice 'Never mind, go back.', false
-    end
+    self.system_clear
 
-    if !expense_select
-      self.view_bank_account(bank_account_id)
-    elsif expense_select.class == Integer
-      prompt.say('This is the placeholder for adding an existing expense! Starting this over.')
-      self.add_transaction(bank_account_id)
+    amount = prompt.ask('How much was the transaction for?')
+
+    expenses = Expense.all
+    if expenses.empty?
+      expense_select = prompt.select('You haven\'t added any expenses to this budget - make a new one?') do |s|
+        s.choice 'Good idea, let\'s do that.', true
+        s.choice 'On second thought, I\'d like to go back.', false
+      end
+
+      expense_select ? self.add_transaction(bank_account_id) : self.view_bank_account(bank_account_id)
+
     else
-      prompt.say('This is the placeholder for creating an expense! Starting this over.')
-      self.add_transaction(bank_account_id)
+      expense_select = prompt.select('Which expense was this transaction for?') do |s|
+        expenses.each { |expense| s.choice "#{expense.title}", expense.id }
+        s.choice 'I don\'t see it - make me a new one.', true
+        s.choice 'Never mind, go back.', false
+      end
+
+      if !expense_select
+        self.view_bank_account(bank_account_id)
+      elsif expense_select.class == Integer
+        prompt.say('Found it. Logging the transaction...')
+        Transaction.create(amount: amount, bank_account_id: bank_account_id, expense_id: expense_select)
+
+        sleep 1
+
+        add_another = prompt.yes?('Do you want to add another transaction?')
+        
+        if add_another
+          prompt.say('Let\'s keep this rolling, then!')
+
+          sleep 1
+
+          self.add_transaction(bank_account_id)
+        else
+          self.view_bank_account(bank_account_id)
+        end
+      else
+        self.add_transaction(bank_account_id)
+      end
     end
   end
 
