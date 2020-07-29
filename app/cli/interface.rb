@@ -118,6 +118,8 @@ class Interface
         prompt.say('Signing you in...')
         sleep 1
         self.user_dashboard
+    else
+      self.main_menu
     end
   end
 
@@ -165,7 +167,36 @@ class Interface
   end
 
   def delete_user
-    self.edit_user
+    first_select = prompt.select('Oh! Sorry to hear that. Are you sure?') do |s|
+      s.choice 'On second thought...', false
+      s.choice 'I\'m sure.', true
+    end
+
+    if first_select
+      prompt.warn('You\'re positive? This will delete your user and all associated data immediately.')
+      prompt.error('This action can\'t be undone.')
+      last_select = prompt.select('Delete your user profile and all data?') do |s|
+        s.choice 'No.', false
+        s.choice 'Yes.', true
+      end
+
+      if last_select
+        prompt.warn('Okay! Sorry to see you go. Stand by for disintegration.')
+
+        sleep 3
+
+        self.user.destroy
+        self.sign_out
+      else
+        prompt.say('Phew! You were scaring me. To the dashboard!')
+        sleep 2
+        self.user_dashboard
+      end
+    else
+      prompt.say('Good call. Let\'s head back to the dashboard.')
+      sleep 2
+      self.user_dashboard
+    end
   end
 
   def edit_user_name
