@@ -472,4 +472,8 @@ class Interface
     self.select_budget_menu
   end
 
+  def edit_bank_account
+    
+  end
+
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_29_144406) do
+ActiveRecord::Schema.define(version: 2020_07_29_165912) do
 
   create_table "bank_accounts", force: :cascade do |t|
     t.integer "budget_id"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2020_07_29_144406) do
     t.string "bank_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
   end
 
   create_table "budgets", force: :cascade do |t|
