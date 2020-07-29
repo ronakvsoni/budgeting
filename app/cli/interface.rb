@@ -2,7 +2,7 @@
 
 class Interface
   attr_reader :prompt
-  attr_accessor :exit, :user, :open_message, :open_choice_1, :open_choice_2
+  attr_accessor :session, :exit, :user, :open_message, :open_choice_1, :open_choice_2
 
   def initialize
     @prompt = TTY::Prompt.new(enable_color: true)
@@ -12,11 +12,27 @@ class Interface
     @exit = false
   end
   
-  #Main method for spinning up the individual loops that each module operates in
-  def open_window
+  #Start a session with this instance of the Interface
+  def new_session
     self.system_clear
+    self.session = { quit: false, window: 'main_menu' }
 
-    
+    until self.session[:quit] do
+      self.send(session[:window])
+    end
+
+    self.system_clear
+    prompt.say('Bye for now!')
+  end
+
+  #Quit a session
+  def quit_session
+    self.session[:quit] = true
+  end
+
+  #Open a window
+  def open_window(window)
+    self.session[:window] = window
   end
 
   #Opening menu methods and close for the entire interface
@@ -26,20 +42,14 @@ class Interface
     open_choice = prompt.select(open_message, cycle: true) do |s|
       s.choice open_choice_1, 'create_user'
       s.choice open_choice_2, 'sign_in'
-      s.choice 'Exit.', 'close'
+      s.choice 'Exit.', false
     end
 
     self.open_message = 'Welcome back! Please select an option:'
     self.open_choice_1 = 'Create a new account, please.'
     self.open_choice_2 = 'Sign me in!'
 
-    self.send(open_choice)
-  end
-
-  def close
-    self.system_clear
-    prompt.say('Bye for now!')
-    self.exit = true
+    !open_choice ? self.quit_session : self.open_window(open_choice)
   end
 
   def system_clear
