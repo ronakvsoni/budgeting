@@ -442,7 +442,7 @@ class Interface
       end
 
       if add_bank_account
-        self.create_bank_account
+        self.create_bank_account(budget_id)
       else
         prompt.say('Alright, going back.')
         sleep 1
@@ -464,16 +464,27 @@ class Interface
     end
   end
 
-  def create_bank_account(p = {})
-    self.select_budget_menu
+  def create_bank_account(budget_id)
+    bank_name = prompt.ask('Which bank is this account at?')
+    name = prompt.ask('Okay, got that down. What do you want to call the account?')
+    prompt.say('Easy. Saving this...')
+    bank_account = BankAccount.create(bank_name: bank_name, name: name, budget_id: budget_id)
+
+    sleep 2
+
+    balance = prompt.ask('Done! What\'s the starting balance?')
+    bank_account.update(balance: balance)
+
+    prompt.say('Good place to start!')
+    self.view_bank_account(bank_account.id)
   end
 
-  def view_bank_account(p = {})
+  def view_bank_account(bank_account_id)
     self.select_budget_menu
   end
 
   def edit_bank_account
-    
+
   end
 
 end
