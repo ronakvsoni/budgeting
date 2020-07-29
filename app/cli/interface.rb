@@ -48,7 +48,7 @@ class Interface
     self.system_clear
     logo = File.read('./app/cli/budgeting.txt')
     puts logo
-    sleep 8
+    sleep 5
   end
 
   #Create user and sign in methods
