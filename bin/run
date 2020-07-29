@@ -10,6 +10,18 @@ i.main_menu
 
 i = nil
 
+# Order of Operations: Extension
+# 1. Build the Category object and table
+# 2. Link Expense to Category and Category to Budget
+# 3. Create menu loops using below ideas and separate everything into modules
+# 4. Add more exit options to every menu
+# 5. Trade the prompt.yes? for a prompt.select
+# 6. Look at building helper methods for the menus
+
+# Ideas:
+# 1. Create a window instance variable to track what's happening in the 'window' in the terminal
+# 2. Use the above to loop a menu instead of endless stacks
+
 #Some notes on flow of the interface:
 
 # X Welcome the user, ask if they're new here
