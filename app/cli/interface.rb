@@ -46,10 +46,9 @@ class Interface
 
   def art_of_budgeting
     self.system_clear
-    logo = File.open('./app/cli/budgeting.txt')
-    logo = logo.readlines.map(&:strip)
-    logo.each { |line| puts line }
-    sleep 3
+    logo = File.read('./app/cli/budgeting.txt')
+    puts logo
+    sleep 5
   end
 
   #Create user and sign in methods
