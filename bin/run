@@ -12,16 +12,14 @@ i = nil
 
 #Some notes on flow of the interface:
 
-# Welcome the user, ask if they're new here
-# + If new, go to user creation, then sign in
-# - If not, ask for their email
-# - (STRETCH) ask for their password
-# When they sign in, create an instance of the User class from their data in the db - this is our user
-# (STRETCH) Add an option here to check what budget they currently have open, saved to the db
+# X Welcome the user, ask if they're new here
+# X + If new, go to user creation, then sign in
+# X - If not, ask for their email
+# X - (STRETCH) ask for their password
+# X When they sign in, create an instance of the User class from their data in the db - this is our user
+# X (STRETCH) Add an option here to check what budget they currently have open, saved to the db
 
-
-
-# Option menu for opening an existing budget or creating new > this goes to Budget Menu
+# X Option menu for opening an existing budget or creating new > this goes to Budget Menu
 
 # Budget Menu: (Currently this is just creating bank accounts and logging transactions)
 # + Wallet (bank_accounts)
