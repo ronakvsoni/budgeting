@@ -36,12 +36,8 @@ class Interface
   end
 
   def system_clear
-    if Gem.win_platform?
-      system 'cls'
-    else
-      system 'clear'
-    end
-    print ''
+    sys_clear = Gem.win_platform? ? 'cls' : 'clear'
+    system sys_clear
   end
 
   def art_of_budgeting
