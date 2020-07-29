@@ -435,8 +435,10 @@ class Interface
     budget = Budget.find_by(id: budget_id)
     bank_accounts = budget.bank_accounts
 
+    self.system_clear
+
     if bank_accounts.length == 0
-      add_bank_account = prompt.select('Oh! It\'s empty. Want to add a bank account?') do |s| #Could do a prompt.yes?no? here
+      add_bank_account = prompt.select('Oh! This wallet is empty. Want to add a bank account?') do |s| #Could do a prompt.yes?no? here
         s.choice 'That\'s embarrassing. Sure!', true
         s.choice 'No, not right now.', false
       end
@@ -451,6 +453,7 @@ class Interface
     else
       menu_select = prompt.select('Here\'s all of your accounts. Which one do you want to see?') do |s|
         bank_accounts.each { |bank_account| s.choice "#{bank_account.name}", bank_account.id }
+        s.choice 'Add another bank account.', 'create_bank_account'
         s.choice 'Close this wallet, please.', false
       end
 
@@ -458,8 +461,10 @@ class Interface
         prompt.say('Sure, taking you back.')
         sleep 1
         self.view_budget(budget_id)
-      else
+      elsif menu_select.class == Integer
         self.view_bank_account(menu_select)
+      else
+        self.send(menu_select, budget_id)
       end
     end
   end
@@ -476,15 +481,91 @@ class Interface
     bank_account.update(balance: balance)
 
     prompt.say('Good place to start!')
+
+    sleep 1
+
     self.view_bank_account(bank_account.id)
   end
 
   def view_bank_account(bank_account_id)
-    self.select_budget_menu
+    self.system_clear
+    bank_account = BankAccount.find_by(id: bank_account_id)
+
+    prompt.say("Bank: #{bank_account.bank_name}          Name: #{bank_account.name}          Balance: #{bank_account.balance}")
+    menu_select = prompt.select('What would you like to do?') do |s|
+      s.choice 'Add a new transaction.', 'add_transaction'
+      s.choice 'See the transaction history.', 'view_transactions'
+      s.choice 'Update this bank account.', 'edit_bank_account'
+      s.choice 'Go back.', false
+    end
+
+    self.wallet(bank_account.budget_id) if !menu_select
+    self.send(menu_select, bank_account.id)
   end
 
-  def edit_bank_account
+  def edit_bank_account(bank_account_id)
+    bank_account = BankAccount.find_by(id: bank_account_id)
 
+    self.system_clear
+
+    prompt.say('Here\'s this account\'s file:')
+    prompt.say("Bank: #{bank_account.bank_name}")
+    prompt.say("Name: #{bank_account.name}")
+    # TODO, STRETCH: Add an option to link a bank account through Plaid API here
+    # TODO: Add status to bank account so you can mark one as 'closed'
+    menu_select = prompt.select('What would you like to do?') do |s|
+      s.choice 'Update the name, please!', 'rename_bank_account'
+      s.choice 'Delete this bank account.', 'delete_bank_account'
+      s.choice 'Wrong turn! Go back to the wallet.', false
+    end
+
+    self.wallet(bank_account_id) if !menu_select
+
+    self.send(menu_select, bank_account_id)
+  end
+
+  def rename_bank_account(bank_account_id)
+    bank_account = BankAccount.find_by(id: bank_account_id)
+
+    name = prompt.ask('Okay! What would you like to call it?')
+    bank_account.update(name: name)
+
+    prompt.say('Yeah, that is better! Saving it now...')
+    sleep 1
+
+    self.edit_bank_account(bank_account_id)
+  end
+
+  def delete_bank_account(bank_account_id)
+    bank_account = BankAccount.find_by(id: bank_account_id)
+
+    first_select = prompt.select('Are you sure? This is extremely permanent.') do |s|
+      s.choice 'It is? Never mind, then.', false
+      s.choice 'Go ahead.', true
+    end
+
+    if first_select
+      final_select = prompt.select('I mean really permanent. It will delete all associated transaction data.') do |s|
+        s.choice 'On second thought...', false
+        s.choice 'Delete the account!', true
+      end
+
+      if final_select
+        prompt.say('Okay, then! Obliterating this account.')
+        budget_id = bank_account.budget_id
+        bank_account.destroy
+        sleep 1
+        self.wallet(budget_id)
+      end
+    end
+
+    def add_transaction(bank_account_id)
+      self.view_bank_account(bank_account_id)
+    end
+
+    def view_transactions(bank_account_id)
+      self.view_bank_account(bank_account_id)
+    end
   end
 
 end
