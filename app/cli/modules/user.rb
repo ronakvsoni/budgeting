@@ -1,5 +1,5 @@
 #TODO: Clean this up after removing the phone methods
-module UserMethods
+module UserInterface
   def create_user(p = {})
     prompt.say('Welcome!') #TODO: Add color to this later
     first_name = prompt.ask('Please say your first name:', modify: :collapse)
@@ -72,7 +72,7 @@ module UserMethods
   end
 
   def sign_out(p = {})
-    prompt.say('Sure thing. Signing you out...')
+    prompt.say('Signing you out...')
     self.user = nil
 
     sleep 1

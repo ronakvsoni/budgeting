@@ -1,4 +1,4 @@
-module BankAccountMethods
+module BankAccountInterface
   def wallet(p = {})
     budget = session_focus(:budget)
     bank_accounts = budget.bank_accounts
@@ -128,6 +128,7 @@ module BankAccountMethods
       prompt.say('Okay, then! Obliterating this account.')
       budget_id = bank_account.budget_id
       bank_account.destroy
+      focus(bank_account: nil)
       sleep 1
       self.open_window('wallet')
     end

@@ -5,9 +5,10 @@ class Interface
   attr_reader :prompt
   attr_accessor :session, :user
 
-  include BankAccountMethods
-  include BudgetMethods
-  include UserMethods
+  include BankAccountInterface
+  include BudgetInterface
+  include TransactionInterface
+  include UserInterface
 
   def initialize
     @prompt = TTY::Prompt.new(enable_color: true)
@@ -38,6 +39,7 @@ class Interface
     }
 
     until self.session[:quit] do
+      self.refresh_models
       self.send(self.session[:window], self.session[:args])
     end
 
@@ -70,6 +72,11 @@ class Interface
     system (Gem.win_platform? ? 'cls' : 'clear')
   end
 
+  #Refresh any models the session currently has in focus before each menu loads
+  def refresh_models
+    self.session[:focus].each { |model, object| object.reload if object }
+  end
+
   #Opening art
   def art_of_budgeting
     self.system_clear
@@ -99,155 +106,5 @@ class Interface
     end
 
     !open_choice ? self.quit_session : self.open_window(open_choice)
-  end
-
-  #Modules past here
-
-
-  def add_transaction(p = {})
-    self.system_clear
-
-    bank_account = session_focus(:bank_account)
-
-    amount = prompt.ask('How much was the transaction for?')
-
-    expenses = Expense.all
-    if expenses.empty?
-      expense_select = prompt.select('You haven\'t added any expenses to this budget - make a new one?') do |s|
-        s.choice 'Good idea, let\'s do that.', true
-        s.choice 'On second thought, I\'d like to go back.', false
-      end
-
-      expense_select ? self.add_transaction(bank_account.id) : self.view_bank_account(bank_account.id)
-
-    else
-      expense_select = prompt.select('Which expense was this transaction for?') do |s|
-        expenses.each { |expense| s.choice "#{expense.title}", expense.id }
-        s.choice 'I don\'t see it - make me a new one.', true
-        s.choice 'Never mind, go back.', false
-      end
-
-      if !expense_select
-        self.view_bank_account(bank_account.id)
-      elsif expense_select.class == Integer
-        prompt.say('Found it. Logging the transaction...')
-        Transaction.create(amount: amount, bank_account_id: bank_account.id, expense_id: expense_select)
-
-        sleep 1
-
-        add_another = prompt.yes?('Do you want to add another transaction?')
-        
-        if add_another
-          prompt.say('Let\'s keep this rolling, then!')
-
-          sleep 1
-
-          self.open_window('add_transaction')
-        else
-          self.open_window('view_bank_account', bank_account_id: bank_account.id)
-        end
-      else
-        self.open_window('add_transaction') # This will turn into create_expense later
-      end
-    end
-  end
-
-  def view_transactions(p = {})
-    bank_account = session_focus(:bank_account)
-
-    self.system_clear
-
-    line = '-----------------------------------'
-    transaction_header = "Bank Account: #{bank_account.name}\n#{line}"
-
-    transaction_log = { 'Go back.' => false }
-
-    bank_account.transactions.each do |transaction|
-      transaction_log[transaction.display] = transaction.id
-    end
-
-    #Look at setting this up so every page_length entries is a back button
-
-    transaction_select = prompt.select(transaction_header, transaction_log, per_page: 15)
-
-    !!transaction_select ? self.edit_transaction(transaction_select) : view_bank_account(bank_account.id)
-  end
-
-  def edit_transaction(transaction_id)
-    transaction = Transaction.find(transaction_id)
-
-    self.system_clear
-
-    prompt.say("Edit Transaction - (#{transaction.id}) - Amount: #{transaction.amount} - From: #{transaction.expense.title}")
-    menu_select = prompt.select('What would you like to update?') do |s|
-      s.choice 'The amount.', 'edit_transaction_amount'
-      s.choice 'The expense.', 'edit_transaction_expense'
-      s.choice 'Let\'s delete this transaction.', 'delete_transaction'
-      s.choice 'Never mind, show me the transaction log again.', false
-    end
-
-    !!menu_select ? self.send(menu_select, transaction.id) : self.view_transactions(transaction.bank_account.id)
-  end
-
-  def edit_transaction_amount(transaction_id)
-    transaction = Transaction.find(transaction_id)
-
-    amount = prompt.ask('What would you like to change the amount to?')
-    prompt.say('Cool. Just a sec...')
-    transaction.update(amount: amount)
-
-    sleep 1
-
-    prompt.say('Done!')
-
-    sleep 1
-
-    self.edit_transaction(transaction_id)
-  end
-
-  def edit_transaction_expense(transaction_id)
-    transaction = Transaction.find(transaction_id)
-    expenses = Expense.all
-    
-    expense_select = prompt.select('Which expense was this transaction for?') do |s|
-      expenses.each { |expense| s.choice "#{expense.title}", expense.id }
-      s.choice 'I don\'t see it - make me a new one.', true
-      s.choice 'Never mind, go back.', false
-    end
-
-    if !expense_select
-      self.view_bank_account(bank_account_id)
-    elsif expense_select.class == Integer
-      prompt.say('Got it. Updating the transaction...')
-      transaction.update(expense_id: expense_select)
-      
-      sleep 1
-
-      prompt.say('Done!')
-
-      sleep 1
-
-      self.edit_transaction(transaction_id)
-    else
-      self.edit_transaction_expense(transaction_id) # This will turn into create_expense later
-    end
-  end
-
-  def delete_transaction(transaction_id)
-    transaction = Transaction.find(transaction_id)
-
-    prompt.warn('Careful! Once I delete this, I can\'t bring it back.')
-    delete_confirm = prompt.yes?('Are you sure you want to delete this transaction?')
-    if delete_confirm
-      bank_account_id = transaction.bank_account_id
-      transaction.destroy
-      prompt.say('Done!')
-
-      sleep 1
-
-      self.view_transactions(bank_account_id)
-    else
-      self.edit_transaction(transaction_id)
-    end
   end
 end
