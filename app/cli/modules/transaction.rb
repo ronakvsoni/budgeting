@@ -37,7 +37,10 @@ module TransactionInterface
 
         sleep 1
 
-        add_another = prompt.yes?('Do you want to add another transaction?')
+        add_another = prompt.select('Do you want to add another transaction?') do |s|
+          s.choice 'Sure!', true
+          s.choice 'I\'m done here.', false
+        end
         
         if add_another
           prompt.say('Let\'s keep this rolling, then!')
@@ -152,7 +155,12 @@ module TransactionInterface
     transaction = session_focus(:transaction)
 
     prompt.warn('Careful! Once I delete this, I can\'t bring it back.')
-    delete_confirm = prompt.yes?('Are you sure you want to delete this transaction?')
+
+    delete_confirm = prompt.select('Are you sure you want to delete this transaction?') do |s|
+      s.choice 'Yes.', true
+      s.choice 'No.', false
+    end
+
     if delete_confirm
       bank_account_id = transaction.bank_account_id
       transaction.destroy

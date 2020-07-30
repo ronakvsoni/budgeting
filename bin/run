@@ -4,23 +4,19 @@ require './config/environment'
 
 i = Interface.new
 
-i.new_session
-
 # i.art_of_budgeting
+
+i.new_session
 
 i = nil
 
 # Order of Operations: Extension
-# 1. Build the Category object and table
-# 2. Link Expense to Category and Category to Budget
-# 3. Create menu loops using below ideas and separate everything into modules
+# 1. X Build the Category object and table
+# 2. X Link Expense to Category and Category to Budget
 # 4. Add more exit options to every menu
-# 5. Trade the prompt.yes? for a prompt.select
-# 6. Look at building helper methods for the menus
-
-# Ideas:
-# 1. Create a window instance variable to track what's happening in the 'window' in the terminal
-# 2. Use the above to loop a menu instead of endless stacks
+# 5. X Trade the prompt.yes? for a prompt.select
+# 6. Get this to run as a bash exe instead of needing the ruby keyword
+# 7. Look at building helper methods for the menus
 
 #Some notes on flow of the interface:
 
@@ -33,33 +29,33 @@ i = nil
 
 # X Option menu for opening an existing budget or creating new > this goes to Budget Menu
 
-# Budget Menu: (Currently this is just creating bank accounts and logging transactions)
-# + Wallet (bank_accounts)
+# X Budget Menu: (Currently this is just creating bank accounts and logging transactions)
+# X + Wallet (bank_accounts)
 
-# +> Wallet
-#  + Add New Bank Account > This goes to 'Add New Bank Account' flow
-#  + Options for each existing bank account > This goes to 'View Bank Account' flow
+# X +> Wallet
+#  X + Add New Bank Account > This goes to 'Add New Bank Account' flow
+#  X + Options for each existing bank account > This goes to 'View Bank Account' flow
 
-# Add New Bank Account
-# + Bank Name:
+# X Add New Bank Account
+# X + Bank Name:
 # + (STRETCH) Do You Want to Link This Account?
 #  + (STRETCH) Y > this goes to Link Account menu (NOT BUILT)
 #  + (STRETCH) N > this skips to the next option
-# + Starting Balance:
-# (COMPLETION) Created! > Goes back to 'Wallet' menu
+# X + Starting Balance:
+# X (COMPLETION) Created! > Goes back to 'Wallet' menu
 
-# View Bank Account
-# + Bank Name, Current Balance
+# X View Bank Account
+# X + Bank Name, Current Balance
 # + (STRETCH) Alert when unapproved transactions
 # + (STRETCH) Reconcile Account > This goes to 'Reconcile Account' dialog
-# + View Full Transaction History > This goes to 'View Full Transaction History' menu
-# + List of last five transactions
+# X + View Full Transaction History > This goes to 'View Full Transaction History' menu
+# X + List of last five transactions
 
-# View Full Transaction History Menu
-# + 'Back to Bank Account' option at the top
-# + Scroll Down
-# - Scroll Up
-# ++ Print a log of transactions
+# X View Full Transaction History Menu
+# X + 'Back to Bank Account' option at the top
+# X + Scroll Down
+# X - Scroll Up
+# X ++ Print a log of transactions
 
 # (STRETCH) Reconcile Account dialog
 # ? (STRETCH) Is the current balance of your account X?
