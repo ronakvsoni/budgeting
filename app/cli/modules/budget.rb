@@ -16,6 +16,7 @@ module BudgetInterface
         self.user.budgets.each { |budget| s.choice budget.name, budget.id }
         s.choice 'I\'d like to create a new budget, please!', 'create_budget'
         s.choice 'On second thought, dashboard me again.', 'user_dashboard'
+        s.choice 'Actually, sign me out.', 'sign_out'
       end
 
       !!(menu_select.class == Integer) ? self.open_window('view_budget', budget_id: menu_select) : self.open_window(menu_select)

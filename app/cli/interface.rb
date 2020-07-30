@@ -62,6 +62,16 @@ class Interface
     p.each { |k, v| self.session[:focus][k] = v }
   end
 
+  def reset_focus
+    self.session[:focus] = {
+      budget: nil,
+      category: nil,
+      expense: nil,
+      bank_account: nil,
+      transaction: nil
+    }
+  end
+
   #Grab a current focus by symbol
   def session_focus(sym)
     self.session[:focus][sym]
