@@ -10,7 +10,7 @@ module BudgetInterface
         s.choice 'Not right now! Let\'s go back.', false
       end
 
-      go ? self.open_window('create budget') : self.open_window('user_dashboard')
+      go ? self.open_window('create_budget') : self.open_window('user_dashboard')
     else
       menu_select = prompt.select('Okay, I found these budgets:') do |s|
         self.user.budgets.each { |budget| s.choice budget.name, budget.id }
