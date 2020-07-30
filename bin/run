@@ -13,10 +13,16 @@ i = nil
 # Order of Operations: Extension
 # 1. X Build the Category object and table
 # 2. X Link Expense to Category and Category to Budget
-# 4. Add more exit options to every menu
+# 4. X Add more exit options to every menu
 # 5. X Trade the prompt.yes? for a prompt.select
 # 6. Get this to run as a bash exe instead of needing the ruby keyword
 # 7. Look at building helper methods for the menus
+
+# Thoughts:
+# 1. Spin Wallet out from under Budget
+  # + This would mean that transactions' belongs_to needs to account for different budgets
+# 2. When building Category, we have to deal with what month we're budgeting for
+# 3. Some of the menus need a little color and to make it clear what we're selecting
 
 #Some notes on flow of the interface:
 
