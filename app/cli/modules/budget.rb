@@ -1,4 +1,4 @@
-module BudgetMethods
+module BudgetInterface
   def select_budget_menu(p = {})
     focus(budget: nil) #clear the current focus for budget
 
@@ -81,7 +81,7 @@ module BudgetMethods
     self.open_window('edit_budget')
   end
 
-  def delete_budget(budget_id)
+  def delete_budget(p = {})
     budget = session_focus(:budget)
 
     menu_select = prompt.select('Are you sure?') do |s|
@@ -116,6 +116,7 @@ module BudgetMethods
       # end
 
       budget.destroy
+      focus(budget: nil)
   
       sleep 1
 
