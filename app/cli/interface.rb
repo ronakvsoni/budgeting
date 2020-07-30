@@ -84,6 +84,7 @@ class Interface
 
   #Refresh any models the session currently has in focus before each menu loads
   def refresh_models
+    self.user.reload if !!self.user
     self.session[:focus].each { |model, object| object.reload if object }
   end
 
