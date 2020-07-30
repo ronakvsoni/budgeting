@@ -4,9 +4,9 @@ require './config/environment'
 
 i = Interface.new
 
-# i.art_of_budgeting
+i.new_session
 
-i.main_menu
+# i.art_of_budgeting
 
 i = nil
 
