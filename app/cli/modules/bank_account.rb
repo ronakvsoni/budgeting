@@ -8,7 +8,7 @@ module BankAccountInterface
     self.system_clear
 
     if bank_accounts.empty?
-      add_bank_account = prompt.select('Oh! This wallet is empty. Want to add a bank account?') do |s| #Could do a prompt.yes?no? here
+      add_bank_account = prompt.select('Oh! This wallet is empty. Want to add a bank account?') do |s|
         s.choice 'That\'s embarrassing. Sure!', true
         s.choice 'No, not right now.', false
       end
