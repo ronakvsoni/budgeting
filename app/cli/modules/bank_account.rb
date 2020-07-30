@@ -25,6 +25,7 @@ module BankAccountInterface
         bank_accounts.each { |bank_account| s.choice "#{bank_account.name}", bank_account.id }
         s.choice 'Add another bank account.', 'create_bank_account'
         s.choice 'Close this wallet, please.', false
+        s.choice 'Let\'s go back to the dashboard.', 'user_dashboard'
       end
 
       if !menu_select
@@ -69,6 +70,7 @@ module BankAccountInterface
       s.choice 'See the transaction history.', 'view_transactions'
       s.choice 'Update this bank account.', 'edit_bank_account'
       s.choice 'Go back.', false
+      s.choice 'Take me back to my dashboard.', 'user_dashboard'
     end
 
     !!menu_select ? self.send(menu_select, bank_account.id) : self.wallet(bank_account.budget_id)

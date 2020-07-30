@@ -83,6 +83,8 @@ module UserInterface
   def user_dashboard(p = {})
     self.system_clear
 
+    self.reset_focus
+
     menu_select = prompt.select("Hi, #{self.user.first_name}! What would you like to do next?") do |s|
       s.choice 'Show me my budgets.', 'select_budget_menu'
       s.choice 'I\'d like to update my user profile.', 'edit_user'
