@@ -3,6 +3,7 @@ class Transaction < ActiveRecord::Base
   belongs_to :expense
   
   def display
-    "#{self.amount} - #{self.expense.title}"
+    expense_title = (!!self.expense ? self.expense.title : 'Uncategorized')
+    "#{self.amount} - #{expense_title}"
   end
 end

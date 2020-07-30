@@ -47,8 +47,8 @@ module BankAccountInterface
 
     sleep 2
 
-    balance = prompt.ask('Done! What\'s the starting balance?')
-    bank_account.update(balance: balance)
+    balance = prompt.ask('Done! What\'s the starting balance?').to_f
+    Transaction.create(amount: balance, bank_account_id: bank_account.id)
 
     prompt.say('Good place to start!')
 
@@ -63,7 +63,7 @@ module BankAccountInterface
     bank_account = BankAccount.find(p[:bank_account_id])
     focus(bank_account: bank_account)
 
-    prompt.say("Bank: #{bank_account.bank_name}          Name: #{bank_account.name}          Balance: #{bank_account.balance}")
+    prompt.say("Bank: #{bank_account.bank_name}          Name: #{bank_account.name}          Balance: #{bank_account.display_balance}")
     menu_select = prompt.select('What would you like to do?') do |s|
       s.choice 'Add a new transaction.', 'add_transaction'
       s.choice 'See the transaction history.', 'view_transactions'
