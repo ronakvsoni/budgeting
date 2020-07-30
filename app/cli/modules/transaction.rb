@@ -5,7 +5,14 @@ module TransactionInterface
     bank_account = session_focus(:bank_account)
     budget = session_focus(:budget) #used to grab the expenses for this budget
 
-    amount = prompt.ask('How much was the transaction for?')
+    outflow = prompt.select('Is this transaction inflow or outflow?') do |s|
+      s.choice 'This is outflow.', true
+      s.choice 'It\'s inflow.', false
+    end
+
+    amount = prompt.ask('How much was the transaction for?').to_f
+
+    amount = -amount if outflow
 
     expenses = Expense.all
     if expenses.empty?
@@ -90,7 +97,17 @@ module TransactionInterface
   def edit_transaction_amount(p = {})
     transaction = session_focus(:transaction)
 
-    amount = prompt.ask('What would you like to change the amount to?')
+    outflow = prompt.select('Is this transaction inflow or outflow?') do |s|
+      s.choice 'This is outflow.', true
+      s.choice 'It\'s inflow.', false
+    end
+
+    amount = prompt.ask('What would you like to change the amount to?').to_f
+
+    binding.pry
+
+    amount = -amount if outflow
+
     prompt.say('Cool. Just a sec...')
     transaction.update(amount: amount)
 

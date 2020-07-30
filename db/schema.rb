@@ -10,11 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_29_223046) do
+ActiveRecord::Schema.define(version: 2020_07_30_024628) do
 
   create_table "bank_accounts", force: :cascade do |t|
     t.integer "budget_id"
-    t.float "balance"
     t.string "bank_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
