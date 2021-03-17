@@ -107,7 +107,7 @@ module TransactionInterface
 
     amount = prompt.ask('What would you like to change the amount to?').to_f
 
-    binding.pry
+    # binding.pry
 
     amount = -amount if outflow
 
